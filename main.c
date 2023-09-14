@@ -6,14 +6,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define Whole_dictionary 0
-#define main_fn 1
-#define hangman 0
-#define Associate 0
-#define Checkpoint_lab_8 0
 GENERIC_VECTOR GetWholeDictionary(void);
-
-#if main_fn
 
 #define MAX_LENGTH 30
 #define MAX_LETTERS 26
@@ -59,8 +52,9 @@ int main(int argc, char *argv[]) {
     if (j >= 0 && j < MAX_LENGTH)
       generic_vector_push_back(hVectorOfWholeDicitionary[j], hMyString);
   }
-  for(i = 0; i < MAX_LENGTH; i++)
-    printf("%d:%d\n", i, generic_vector_get_size(hVectorOfWholeDicitionary[i]));
+
+  /* for(i = 0; i < MAX_LENGTH; i++) */
+  /*   printf("%d:%d\n", i, generic_vector_get_size(hVectorOfWholeDicitionary[i])); */
 
   fclose(fp);
   my_string_destroy(&hMyString);
@@ -334,166 +328,3 @@ void ClearKeyboardBuffer(void){
     noc = scanf("%c", &c);
   }
 }
-
-
-#endif
-
-#if Associate
-
-#define WORD_LENGTH 3
-
-int main(int argc, char *argv[]) {
-  GENERIC_VECTOR hVector = NULL, hVectorResult = NULL;
-  ASSOCIATIVE_ARR hArr = NULL;
-  int i = 0, j, count = 0;
-  FILE *fp;
-  hArr = associray_init_default();
-  if (hArr == NULL) {
-    printf("Failed to allocate space for associray.\n");
-    exit(1);
-  }
-  hVector = generic_vector_init_default(my_string_init_copy, my_string_destroy);
-  if (hVector == NULL) {
-    printf("Failed to allocate space for generic vector.\n");
-    exit(1);
-  }
-  MY_STRING hMyString = my_string_init_default();
-  if (hMyString == NULL) {
-    printf("Failed to get item at my_string_init_default for hMyString.\n");
-    exit(1);
-  }
-  fp = fopen("dictionary.txt", "r");
-  if (fp == NULL) {
-    printf("Failed to open dictionary.txt\n");
-    exit(1);
-  }
-
-  while (my_string_extraction(hMyString, fp)) {
-    j = my_string_get_size(hMyString);
-    if (j == WORD_LENGTH){
-      generic_vector_push_back(hVector, hMyString);
-      count++;
-    }
-  }
-  while(!my_string_empty(hMyString)){
-    my_string_pop_back(hMyString);
-  }
-  for (i = 0; i < WORD_LENGTH; i++)
-    my_string_push_back(hMyString, '-');
-  for (j = 0; j < generic_vector_get_size(hVector); j++) {
-    associray_insert(hArr, hVector,
-                     hMyString);
-  }
-  printf("%s:%d\n", my_string_c_str(hMyString), count);
-  associray_print(hArr);
-  printf("\n");
-  my_string_pop_back(hMyString);
-  my_string_push_back(hMyString, 'l');
-  for (j = 0; j < generic_vector_get_size(hVector); j++) {
-    associray_insert(hArr, hVector,
-                     hMyString);
-  }
-
-  hVectorResult = associray_search(hArr, hMyString);
-  if(hVectorResult != NULL){
-    printf("The first word on the vector is %s\n", my_string_c_str((MY_STRING)*generic_vector_at(hVectorResult, 0)));
-  }
-  else{
-    printf("not found\n");
-  }
-  associray_inorder(hArr);
-  associray_destroy(&hArr);
-  generic_vector_destroy(&hVector);
-  fclose(fp);
-  my_string_destroy(&hMyString);
-  return 0;
-}
-#endif
-
-#if Checkpoint_lab_8
-int main(int argc, char *argv[]) {
-  int i;
-  MY_STRING old_key[4] = {NULL}, word[4] = {NULL}, new_key[4] = {NULL};
-  char guess[4];
-  old_key[0] = my_string_init_c_string("---");
-  word[0] = my_string_init_c_string("The");
-  guess[0] = 'T';
-
-  old_key[1] = my_string_init_c_string("-----");
-  word[1] = my_string_init_c_string("Truck");
-  guess[1] = 'r';
-
-  old_key[2] = my_string_init_c_string("--ppy");
-  word[2] = my_string_init_c_string("happy");
-  guess[2] = 'h';
-
-  old_key[3] = my_string_init_c_string("--e---e");
-  word[3] = my_string_init_c_string("awesome");
-  guess[3] = 'z';
-
-  for(i = 0; i < 4; i++){
-    new_key[i] = my_string_init_default();
-    if(new_key[i] == NULL){
-      printf("Failed to init default new keys at %d", i);
-      exit(1);
-    }
-  }
-
-  for (i = 0; i < 4; i++) {
-    get_word_key_value(old_key[i], new_key[i], word[i], guess[i]);
-    printf("old_key: %3s | word: %3s | guess: %3c | new_key: %3s \n", my_string_c_str(old_key[i]), my_string_c_str(word[i]), guess[i], my_string_c_str(new_key[i]));
-    my_string_destroy(&old_key[i]);
-    my_string_destroy(&new_key[i]);
-    my_string_destroy(&word[i]);
-  }
-  return 0;
-}
-#endif
-
-
-#if Whole_dictionary
-
-#define MAX_LENGTH 30
-GENERIC_VECTOR GetWholeDictionary(void) {
-  GENERIC_VECTOR hVector[MAX_LENGTH] = {NULL};
-  int i = 0, j;
-  FILE *fp;
-  for (i = 0; i < MAX_LENGTH; i++) {
-    hVector[i] =
-        generic_vector_init_default(my_string_init_copy, my_string_destroy);
-    if (hVector[i] == NULL) {
-      printf("Failed to allocate space for generic vector.\n");
-      exit(1);
-    }
-  }
-  MY_STRING hMyString = my_string_init_default();
-  if (hMyString == NULL) {
-    printf("Failed to get item at my_string_init_default for hMyString.\n");
-    exit(1);
-  }
-  fp = fopen("dictionary.txt", "r");
-  if (fp == NULL) {
-    printf("Failed to open dictionary.txt\n");
-    exit(1);
-  }
-
-  while (my_string_extraction(hMyString, fp)) {
-    j = my_string_get_size(hMyString);
-    if (j >= 0 && j < MAX_LENGTH)
-      generic_vector_push_back(hVector[j - 1], hMyString);
-  }
-  for (i = 0; i < MAX_LENGTH; i++) {
-    for (j = 0; j < generic_vector_get_size(hVector[i]); j++) {
-      my_string_insertion((MY_STRING)(*generic_vector_at(hVector[i], j)),
-                          stdout);
-      printf("\n");
-    }
-  }
-  for (i = 0; i < MAX_LENGTH; i++) {
-    generic_vector_destroy(&hVector[i]);
-  }
-  fclose(fp);
-  my_string_destroy(&hMyString);
-  return ;
-}
-#endif
