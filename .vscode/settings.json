@@ -1,0 +1,21 @@
+{
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/usr/cs/undergrad/2026/sdasilva/Spring2023/COMP1020/HANGMAN",
+            "binaryPath": "/usr/cs/undergrad/2026/sdasilva/Spring2023/COMP1020/HANGMAN/string_driver",
+            "binaryArgs": []
+        }
+    ],
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "my_string.h": "c",
+        "*.tcc": "c",
+        "ostream": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c",
+        "typeinfo": "c",
+        "stdio.h": "c",
+        "status.h": "c"
+    }
+}
